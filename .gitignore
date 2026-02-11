@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+src-tauri/target/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Tauri
+src-tauri/target/
+src-tauri/gen/
+WixTools/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Vault data (never commit encrypted vaults or backups)
+vault.enc
+*.enc

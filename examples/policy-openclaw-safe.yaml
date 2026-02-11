@@ -1,0 +1,12 @@
+# Vault-0 policy preset: OpenClaw Hardened
+# Use with Policies page or: load from this path
+allow_domains:
+  - api.openai.com
+  - api.anthropic.com
+block_domains:
+  - internal.company.local
+  - 169.254.169.254
+spend_cap_cents: 1000
+output_redact_patterns:
+  - "sk-[a-zA-Z0-9]{20,}"
+  - "Bearer [a-zA-Z0-9._-]+"
