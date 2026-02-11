@@ -38,6 +38,8 @@ jobs:
     if: needs.semantic-release.outputs.new-release-published == 'true'
     runs-on: macos-14
     timeout-minutes: 60
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
