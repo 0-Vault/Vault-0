@@ -27,11 +27,18 @@ jobs:
           node-version: 22
 
       - name: Install semantic-release plugins
-        run: npm install -g @semantic-release/exec @semantic-release/git
+        run: npm install --save-dev @semantic-release/exec @semantic-release/git @semantic-release/github
 
       - name: Semantic Release
         id: semantic
         uses: codfish/semantic-release-action@v3
+        with:
+          plugins: |
+            @semantic-release/commit-analyzer
+            @semantic-release/release-notes-generator
+            @semantic-release/exec
+            @semantic-release/git
+            @semantic-release/github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
