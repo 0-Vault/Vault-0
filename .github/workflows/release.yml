@@ -1,96 +1,111 @@
-name: Release
+name: Release & Build
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  version:
-    name: Version Bump
+  semantic-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
     outputs:
-      new_release: ${{ steps.semantic.outputs.new-release-published }}
-      version: ${{ steps.semantic.outputs.release-version }}
-      tag: ${{ steps.semantic.outputs.git-tag }}
+      new-release-published: ${{ steps.semantic.outputs.new_release_published }}
+      new-release-version: ${{ steps.semantic.outputs.new_release_version }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - name: Install semantic-release plugins
-        run: npm install --save-dev @semantic-release/exec @semantic-release/git @semantic-release/github
-
+      - run: npm ci
       - name: Semantic Release
         id: semantic
-        uses: codfish/semantic-release-action@v3
-        with:
-          plugins: |
-            @semantic-release/commit-analyzer
-            @semantic-release/release-notes-generator
-            @semantic-release/exec
-            @semantic-release/git
-            @semantic-release/github
+        uses: cycjimmy/semantic-release-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release Debug Info
+        run: |
+          echo "Release published: ${{ steps.semantic.outputs.new_release_published }}"
+          echo "Version: ${{ steps.semantic.outputs.new_release_version }}"
 
-  build:
-    name: Build (${{ matrix.label }})
-    needs: version
-    if: needs.version.outputs.new_release == 'true'
+  build-macos:
+    needs: semantic-release
+    if: needs.semantic-release.outputs.new-release-published == 'true'
+    runs-on: macos-14
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
         include:
-          - platform: macos-latest
-            target: aarch64-apple-darwin
+          - target: aarch64-apple-darwin
             label: apple-silicon
-          - platform: macos-latest
-            target: x86_64-apple-darwin
+          - target: x86_64-apple-darwin
             label: intel
-    runs-on: ${{ matrix.platform }}
     steps:
+      - name: Starting Build - ${{ matrix.label }}
+        run: |
+          echo "Target: ${{ matrix.target }}"
+          echo "Version: ${{ needs.semantic-release.outputs.new-release-version }}"
+
       - uses: actions/checkout@v4
         with:
-          ref: main
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pull latest (includes version bump commit)
-        run: git pull origin main
+      - name: Setup Environment
+        run: |
+          VERSION="${{ needs.semantic-release.outputs.new-release-version }}"
+          echo "Syncing version: $VERSION"
+          git pull origin main || true
+          sed -i '' "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" src-tauri/tauri.conf.json
+          node scripts/bump-version.js "$VERSION"
+          echo "Version synchronized"
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
-      - name: Install Rust stable
+      - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
 
-      - name: Rust cache
+      - name: Rust Cache
         uses: swatinem/rust-cache@v2
         with:
-          workspaces: src-tauri
+          workspaces: src-tauri -> target
+          cache-on-failure: true
 
-      - name: Install frontend dependencies
-        run: npm install
+      - name: Install Dependencies
+        run: |
+          npm ci
+          echo "Node: $(node --version)"
+          echo "Rust: $(rustc --version)"
 
-      - name: Build Tauri app
+      - name: Build Frontend
+        run: |
+          npm run build
+          echo "Frontend built: $(du -sh dist/)"
+
+      - name: Build Tauri App
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: v${{ needs.version.outputs.version }}
-          releaseName: "Vault-0 v${{ needs.version.outputs.version }}"
-          releaseBody: "See the [changelog](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details."
+          tagName: v${{ needs.semantic-release.outputs.new-release-version }}
+          releaseName: Vault-0 v${{ needs.semantic-release.outputs.new-release-version }}
+          releaseBody: "See the assets to download and install Vault-0."
           releaseDraft: false
           prerelease: false
           args: --target ${{ matrix.target }}
+
+      - name: Build Summary
+        run: |
+          echo "Build completed for ${{ matrix.label }}"
+          echo "Version: ${{ needs.semantic-release.outputs.new-release-version }}"
