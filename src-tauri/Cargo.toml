@@ -1,6 +1,6 @@
 [package]
 name = "vault0-desktop"
-version = "1.0.1"
+version = "1.0.2"
 description = "Secure desktop dashboard for autonomous AI agents"
 authors = ["HorizonFlowLive"]
 edition = "2021"
