@@ -13,9 +13,9 @@ jobs:
     name: Version Bump
     runs-on: ubuntu-latest
     outputs:
-      new_release: ${{ steps.semantic.outputs.new_release_published }}
-      version: ${{ steps.semantic.outputs.new_release_version }}
-      tag: ${{ steps.semantic.outputs.new_release_git_tag }}
+      new_release: ${{ steps.semantic.outputs.new-release-published }}
+      version: ${{ steps.semantic.outputs.release-version }}
+      tag: ${{ steps.semantic.outputs.git-tag }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,16 +27,16 @@ jobs:
           node-version: 22
 
       - name: Install semantic-release plugins
-        run: npm install -g semantic-release @semantic-release/exec @semantic-release/git @semantic-release/github @semantic-release/commit-analyzer @semantic-release/release-notes-generator
+        run: npm install -g @semantic-release/exec @semantic-release/git
 
-      - name: Run semantic-release
+      - name: Semantic Release
         id: semantic
+        uses: codfish/semantic-release-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
 
   build:
-    name: Build (${{ matrix.target }})
+    name: Build (${{ matrix.label }})
     needs: version
     if: needs.version.outputs.new_release == 'true'
     strategy:
