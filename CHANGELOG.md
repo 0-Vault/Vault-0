@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/0-Vault/Vault-0/compare/v1.0.2...v1.0.3) (2026-02-11)
+
+
+### Bug Fixes
+
+* add write permissions to build job for release uploads ([de75648](https://github.com/0-Vault/Vault-0/commit/de75648f682ddfd449a6e111c1cb84de11e947be))
+
 ## [1.0.2](https://github.com/0-Vault/Vault-0/compare/v1.0.1...v1.0.2) (2026-02-11)
 
 
