@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/0-Vault/Vault-0/compare/v1.1.0...v1.2.0) (2026-02-12)
+
+
+### Features
+
+* add ClawHub skill with SHA-256 checksums and auto-publish on release ([2e94b13](https://github.com/0-Vault/Vault-0/commit/2e94b1384d5bc4ee13e14c752e2a482e69cc1e72))
+
 # [1.1.0](https://github.com/0-Vault/Vault-0/compare/v1.0.3...v1.1.0) (2026-02-12)
 
 
