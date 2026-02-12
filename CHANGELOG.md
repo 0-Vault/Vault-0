@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/0-Vault/Vault-0/compare/v1.4.0...v1.5.0) (2026-02-12)
+
+
+### Features
+
+* update SKILL.md to include DMG notarization status ([6ae12af](https://github.com/0-Vault/Vault-0/commit/6ae12af660f09343162936cf01292b459c82fe1c))
+
 # [1.4.0](https://github.com/0-Vault/Vault-0/compare/v1.3.0...v1.4.0) (2026-02-12)
 
 
