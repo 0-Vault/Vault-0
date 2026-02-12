@@ -11,7 +11,10 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT License"></a>
   <a href="https://github.com/0-Vault/Vault-0/releases"><img src="https://img.shields.io/github/v/release/0-Vault/Vault-0" alt="Release"></a>
+  <a href="https://youtu.be/FGGWJdeyY9g"><img src="https://img.shields.io/badge/demo-YouTube-red" alt="Demo Video"></a>
 </p>
+
+<p align="center"><img src="docs/demo.gif" width="720" alt="Vault-0 demo"></p>
 
 ---
 
@@ -21,7 +24,7 @@ Your agent keeps working exactly as before. Vault-0 wraps it in a security layer
 
 **The problem:** OpenClaw stores API keys as plaintext in `~/.openclaw/.env`. Anyone with disk access can read them. A prompt injection can exfiltrate them. There's no spend limit, no domain allowlist, no kill switch.
 
-**The fix:** Vault-0 moves your secrets into an encrypted vault (AES-256-GCM + Argon2id), injects them into the agent at runtime (in memory only), and applies security policies automatically.
+**The fix:** Vault-0 moves your secrets into an encrypted vault (AES-256-GCM + Argon2id), injects them ephemerally at launch (~2 seconds on disk, then zeroed), and applies security policies automatically.
 
 ## Quick Start
 
@@ -85,7 +88,7 @@ BEFORE:                              AFTER:
 ### Security Policy Engine
 - Domain allowlisting (only approved API endpoints)
 - Metadata endpoint blocking (169.254.169.254)
-- Daily spend cap ($10 default)
+- Spend cap on x402 payments
 - Log redaction patterns (strip API keys from output)
 
 ### Live Dashboard
