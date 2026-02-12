@@ -153,7 +153,7 @@ jobs:
           clawhub login --token "$CLAWHUB_TOKEN" --no-browser
           clawhub publish ./skills/vault0 \
             --slug vault0 \
-            --name "Vault-0" \
+            --name "Vault-0: Agent Security, Monitor & x402 Wallet for OpenClaw" \
             --version "$VERSION" \
             --changelog "Release v${VERSION}. See https://github.com/0-Vault/Vault-0/releases/tag/v${VERSION}" \
             --tags latest,security,monitoring
