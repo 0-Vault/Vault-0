@@ -28,20 +28,30 @@ Your agent keeps working exactly as before. Vault-0 wraps it in a security layer
 
 ## Quick Start
 
-**For existing OpenClaw users** (recommended):
+**Via ClawHub** (let your agent install it):
+
+```bash
+clawhub install vault0
+```
+
+Or paste this link to your OpenClaw agent:
+
+```
+https://raw.githubusercontent.com/0-Vault/Vault-0/main/skills/vault0/SKILL.md
+```
+
+**For existing OpenClaw users** (manual):
 
 1. Download Vault-0 from [Releases](https://github.com/0-Vault/Vault-0/releases)
 2. Open it — Vault-0 auto-detects your OpenClaw install
-3. Click **"Secure My Agent"**
-4. Set a master passphrase
-5. Click **"Harden Now"** — done in 30 seconds
+3. Choose **"Secure My Agent"**, **"Just Monitor"**, or **"Install OpenClaw"**
+4. For security hardening: set a master passphrase and click **"Harden Now"**
 
-**For new users:**
+**For monitoring only:**
 
 1. Download Vault-0
-2. Click **"Install OpenClaw"**
-3. Follow the guided terminal wizard
-4. Click **"Harden Now"** on the dashboard
+2. Click **"Just Monitor"** on the welcome screen
+3. Click **"Connect"** on the Monitor page — streams live agent activity
 
 ## How It Works
 

@@ -107,7 +107,54 @@ jobs:
           prerelease: false
           args: --target ${{ matrix.target }}
 
+      - name: Generate Checksums
+        run: |
+          VERSION="${{ needs.semantic-release.outputs.new-release-version }}"
+          cd src-tauri/target/${{ matrix.target }}/release/bundle
+          find . -name "*.dmg" -o -name "*.tar.gz" -o -name "*.zip" | while read f; do
+            shasum -a 256 "$f" > "$f.sha256"
+            echo "Checksum: $(cat "$f.sha256")"
+          done
+
+      - name: Upload Checksums
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.semantic-release.outputs.new-release-version }}
+          files: src-tauri/target/${{ matrix.target }}/release/bundle/**/*.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build Summary
         run: |
           echo "Build completed for ${{ matrix.label }}"
           echo "Version: ${{ needs.semantic-release.outputs.new-release-version }}"
+
+  publish-clawhub:
+    needs: [semantic-release, build-macos]
+    if: needs.semantic-release.outputs.new-release-published == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install ClawHub CLI
+        run: npm i -g clawhub
+      - name: Sync Version in SKILL.md
+        run: |
+          VERSION="${{ needs.semantic-release.outputs.new-release-version }}"
+          sed -i "s/clawhub install vault0/clawhub install vault0  # v${VERSION}/" skills/vault0/SKILL.md
+          echo "Synced SKILL.md to v${VERSION}"
+      - name: Publish Skill to ClawHub
+        env:
+          CLAWHUB_TOKEN: ${{ secrets.CLAWHUB_TOKEN }}
+        run: |
+          VERSION="${{ needs.semantic-release.outputs.new-release-version }}"
+          clawhub login --token "$CLAWHUB_TOKEN" --no-browser
+          clawhub publish ./skills/vault0 \
+            --slug vault0 \
+            --name "Vault-0" \
+            --version "$VERSION" \
+            --changelog "Release v${VERSION}. See https://github.com/0-Vault/Vault-0/releases/tag/v${VERSION}" \
+            --tags latest,security,monitoring
+          echo "Published vault0 v${VERSION} to ClawHub"
