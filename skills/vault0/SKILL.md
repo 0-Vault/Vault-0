@@ -1,3 +1,11 @@
+---
+name: vault0
+description: Encrypted secret vault, security policy engine, and real-time agent monitor for OpenClaw agents. macOS desktop app (Rust + Tauri). Reads ~/.openclaw/.env during hardening. No external network calls.
+homepage: https://github.com/0-Vault/Vault-0
+repository: https://github.com/0-Vault/Vault-0
+metadata: {"emoji":"🔐","category":"security","os":"macos","minOS":"12","dependencies":["openclaw"],"configPaths":["~/.openclaw/.env","~/.openclaw/openclaw.json"],"networkAccess":"localhost-only","persistence":"installed-app"}
+---
+
 # Vault-0
 
 Encrypted secret vault, security policy engine, and real-time agent monitor for OpenClaw. Open source (MIT), built with Rust + Tauri. Source code: https://github.com/0-Vault/Vault-0
