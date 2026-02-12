@@ -85,11 +85,13 @@ BEFORE:                              AFTER:
 - Applies security policy + starts proxy
 - Restarts agent with vault keys — all in one click
 
-### Security Policy Engine
+### Security Policy Engine (Proxy — Opt-In)
+- Local proxy available at `127.0.0.1:3840` for policy enforcement
 - Domain allowlisting (only approved API endpoints)
 - Metadata endpoint blocking (169.254.169.254)
 - Spend cap on x402 payments
 - Log redaction patterns (strip API keys from output)
+- To route agent traffic through the proxy, set `HTTP_PROXY=http://127.0.0.1:3840` in your agent environment
 
 ### Live Dashboard
 - Real-time gateway health monitoring
@@ -183,7 +185,7 @@ npm run tauri build  # production .dmg
 |--------|---------|
 | `vault_store` | Encrypted secret vault (create, unlock, CRUD entries) |
 | `detect` | OpenClaw detection, hardening, ephemeral .env writer |
-| `proxy` | HTTP reverse proxy with key injection + policy enforcement |
+| `proxy` | HTTP reverse proxy with policy enforcement (opt-in, not in default traffic path) |
 | `policy` | Domain allowlist, spend caps, redaction patterns |
 | `evidence` | Tamper-evident event log with SHA-256 receipts |
 | `openclaw_health` | Gateway health checks + config parsing |
@@ -195,7 +197,7 @@ npm run tauri build  # production .dmg
 
 1. **Secrets never persist on disk** — stored encrypted in vault, injected ephemerally at runtime
 2. **Master passphrase never leaves your machine** — Argon2id derives the encryption key locally
-3. **Policy enforcement** — domain allowlisting prevents exfiltration to unauthorized endpoints
+3. **Policy enforcement** — opt-in proxy with domain allowlisting to prevent exfiltration to unauthorized endpoints
 4. **Tamper-evident logging** — every proxy event is logged with SHA-256 hashes
 5. **Emergency controls** — one-click proxy kill switch + full revert to pre-hardening state
 6. **No telemetry, no cloud** — everything runs locally on your Mac

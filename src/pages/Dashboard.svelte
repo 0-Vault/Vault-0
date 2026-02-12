@@ -314,7 +314,7 @@
     {#if events.length === 0}
       <div class="rounded-lg bg-zinc-800/40 p-4 text-center">
         <p class="text-sm text-zinc-400">No activity yet.</p>
-        <p class="text-xs text-zinc-500 mt-1">When your agent makes API calls through the Vault-0 proxy, they appear here.</p>
+        <p class="text-xs text-zinc-500 mt-1">Security events from the policy proxy appear here. Use the Monitor tab for full agent activity.</p>
       </div>
     {:else}
       <SessionTrace {events} />
@@ -345,11 +345,11 @@
     <details class="rounded-lg border border-zinc-800 bg-zinc-800/30 p-3">
       <summary class="cursor-pointer text-sm text-zinc-400">How It Works</summary>
       <div class="mt-2 text-xs text-zinc-500 space-y-1">
-        <p>1. Your agent calls API providers as normal.</p>
-        <p>2. Requests route through the Vault-0 proxy (127.0.0.1:3840).</p>
-        <p>3. The proxy reads the real API key from the encrypted vault.</p>
-        <p>4. The key is injected into the request header in memory.</p>
-        <p>5. The request is forwarded. The key never touches disk.</p>
+        <p>1. You click "Restart Secure Agent" to launch your bot.</p>
+        <p>2. Vault-0 decrypts keys from the vault and writes a temporary .env.</p>
+        <p>3. The OpenClaw daemon restarts and reads keys into memory.</p>
+        <p>4. Vault-0 zeros the .env file (~2 seconds on disk).</p>
+        <p>5. Your agent runs with real keys in memory. No plaintext on disk.</p>
       </div>
     </details>
 

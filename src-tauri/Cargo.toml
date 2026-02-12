@@ -41,4 +41,6 @@ hex = "0.4"
 rand = "0.8"
 argon2 = "0.5"
 aes-gcm = "0.10"
+tokio-tungstenite = { version = "0.24", features = ["native-tls"] }
+futures-util = "0.3"
 

@@ -219,6 +219,11 @@
     currentView.set("dashboard");
   }
 
+  function goToMonitor() {
+    hasCompletedOnboarding.set(true);
+    currentView.set("monitor");
+  }
+
   function goToWizard() {
     setupState.set({ step: "setup", existingPath: "", useExisting: false });
     currentView.set("setup");
@@ -248,16 +253,16 @@
       <p class="text-sm text-zinc-400 mb-4">Vault-0 is a secure command center for your OpenClaw AI agent. It encrypts your API keys, monitors agent activity, and gives you full control.</p>
       <div class="space-y-3 text-xs text-zinc-500 mt-4">
         <div class="flex items-start gap-2">
+          <span class="text-emerald-400 mt-0.5">📡</span>
+          <p>Monitor live agent activity: messages, tool calls, and thinking states in real time.</p>
+        </div>
+        <div class="flex items-start gap-2">
           <span class="text-emerald-400 mt-0.5">🔒</span>
           <p>Encrypt all API keys and tokens in a local vault.</p>
         </div>
         <div class="flex items-start gap-2">
           <span class="text-emerald-400 mt-0.5">🛡</span>
           <p>Apply security policies: domain allowlisting, spend caps, log redaction.</p>
-        </div>
-        <div class="flex items-start gap-2">
-          <span class="text-emerald-400 mt-0.5">📊</span>
-          <p>Monitor live agent activity and share proof of security.</p>
         </div>
         <div class="flex items-start gap-2">
           <span class="text-emerald-400 mt-0.5">🚨</span>
@@ -385,30 +390,30 @@
         </div>
         <div class="flex items-start gap-2">
           <span class="text-emerald-400 mt-0.5">2.</span>
-          <p>The request goes through Vault-0's local proxy (127.0.0.1:3840).</p>
+          <p>Vault-0 decrypts your keys from the vault and writes them to .env temporarily.</p>
         </div>
         <div class="flex items-start gap-2">
           <span class="text-emerald-400 mt-0.5">3.</span>
-          <p>The proxy reads the real API key from the encrypted vault (in memory only).</p>
+          <p>The OpenClaw daemon restarts and reads the keys into memory.</p>
         </div>
         <div class="flex items-start gap-2">
           <span class="text-emerald-400 mt-0.5">4.</span>
-          <p>The key is injected into the request header and forwarded to the API provider.</p>
+          <p>Vault-0 zeros the .env file. Keys are on disk for about 2 seconds.</p>
         </div>
         <div class="flex items-start gap-2">
           <span class="text-emerald-400 mt-0.5">5.</span>
-          <p>The response passes back to your agent. The key is never written to disk.</p>
+          <p>Your agent runs with real keys in memory. No plaintext on disk.</p>
         </div>
       </div>
       <div class="space-y-3 text-xs text-zinc-500 mt-6">
         <p class="text-zinc-400 font-medium">On the Dashboard you can:</p>
         <div class="flex items-start gap-2">
-          <span class="text-emerald-400 mt-0.5">📊</span>
-          <p>Monitor live proxy activity and security status.</p>
+          <span class="text-emerald-400 mt-0.5">📡</span>
+          <p>Monitor live agent activity, messages, and tool calls.</p>
         </div>
         <div class="flex items-start gap-2">
           <span class="text-emerald-400 mt-0.5">🚨</span>
-          <p>Emergency stop the proxy or revert all changes.</p>
+          <p>Emergency stop or revert all changes.</p>
         </div>
         <div class="flex items-start gap-2">
           <span class="text-emerald-400 mt-0.5">📤</span>
@@ -435,27 +440,36 @@
         </div>
 
       {:else if state === "choose"}
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-3 gap-3">
           <button
             type="button"
-            class="rounded-xl border-2 p-6 text-left space-y-3 transition-colors {detection?.found ? 'border-emerald-600 bg-emerald-950/20 hover:bg-emerald-950/30' : 'border-zinc-700 bg-zinc-900/60 hover:bg-zinc-800/60'}"
+            class="rounded-xl border-2 p-5 text-left space-y-3 transition-colors {detection?.found ? 'border-emerald-600 bg-emerald-950/20 hover:bg-emerald-950/30' : 'border-zinc-700 bg-zinc-900/60 hover:bg-zinc-800/60'}"
             on:click={chooseSecure}
           >
             <div class="text-3xl">🛡</div>
             <h3 class="text-base font-bold">Secure My Agent</h3>
-            <p class="text-sm text-zinc-400">I already have OpenClaw running. Scan and harden my existing install.</p>
+            <p class="text-xs text-zinc-400">Scan and harden my existing OpenClaw install.</p>
             {#if detection?.found}
               <span class="inline-block rounded bg-emerald-600/20 px-2 py-0.5 text-xs text-emerald-400">Recommended</span>
             {/if}
           </button>
           <button
             type="button"
-            class="rounded-xl border-2 p-6 text-left space-y-3 transition-colors {!detection?.found ? 'border-emerald-600 bg-emerald-950/20 hover:bg-emerald-950/30' : 'border-zinc-700 bg-zinc-900/60 hover:bg-zinc-800/60'}"
+            class="rounded-xl border-2 p-5 text-left space-y-3 transition-colors border-zinc-700 bg-zinc-900/60 hover:bg-zinc-800/60"
+            on:click={goToMonitor}
+          >
+            <div class="text-3xl">📡</div>
+            <h3 class="text-base font-bold">Just Monitor</h3>
+            <p class="text-xs text-zinc-400">Skip setup. Watch my agent's live activity and security events.</p>
+          </button>
+          <button
+            type="button"
+            class="rounded-xl border-2 p-5 text-left space-y-3 transition-colors {!detection?.found ? 'border-emerald-600 bg-emerald-950/20 hover:bg-emerald-950/30' : 'border-zinc-700 bg-zinc-900/60 hover:bg-zinc-800/60'}"
             on:click={chooseInstall}
           >
             <div class="text-3xl">📦</div>
             <h3 class="text-base font-bold">Install OpenClaw</h3>
-            <p class="text-sm text-zinc-400">I need to set up OpenClaw from scratch using the guided wizard.</p>
+            <p class="text-xs text-zinc-400">Set up OpenClaw from scratch using the guided wizard.</p>
             {#if !detection?.found}
               <span class="inline-block rounded bg-emerald-600/20 px-2 py-0.5 text-xs text-emerald-400">Recommended</span>
             {/if}

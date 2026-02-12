@@ -2,6 +2,7 @@
 
 mod detect;
 mod evidence;
+mod gateway_ws;
 mod launcher;
 mod mcp_guard;
 mod openclaw_health;
@@ -87,6 +88,10 @@ pub fn run() {
             vault_store::vault_get_secret,
             vault_store::vault_delete_entry,
             vault_store::vault_delete_file,
+            gateway_ws::gateway_connect,
+            gateway_ws::gateway_disconnect,
+            gateway_ws::gateway_status,
+            gateway_ws::get_gateway_events,
         ])
         .setup(|_app| {
             info!("Vault-0 starting");

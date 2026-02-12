@@ -4,6 +4,7 @@ export type ViewName =
   | "welcome"
   | "setup"
   | "dashboard"
+  | "monitor"
   | "secrets"
   | "policies"
   | "payments"

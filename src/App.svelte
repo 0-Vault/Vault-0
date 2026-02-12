@@ -6,6 +6,7 @@
   import Policies from "./pages/Policies.svelte";
   import Payments from "./pages/Payments.svelte";
   import Evidence from "./pages/Evidence.svelte";
+  import Monitor from "./pages/Monitor.svelte";
   import Terminal from "./components/Terminal.svelte";
   import { currentView, hasCompletedOnboarding, terminalOpen } from "./stores/app";
   import { onMount, onDestroy } from "svelte";
@@ -33,6 +34,7 @@
   } else {
     switch ($currentView) {
       case "dashboard": View = Dashboard; break;
+      case "monitor": View = Monitor; break;
       case "secrets": View = Secrets; break;
       case "policies": View = Policies; break;
       case "payments": View = Payments; break;
@@ -51,6 +53,7 @@
 
   const navItems = [
     { id: "dashboard", label: "Overview", icon: "📊" },
+    { id: "monitor", label: "Monitor", icon: "📡" },
     { id: "secrets", label: "Secrets", icon: "🔑" },
     { id: "payments", label: "Wallet", icon: "💰" },
     { id: "policies", label: "Policies", icon: "🛡" },

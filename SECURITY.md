@@ -21,7 +21,7 @@ Vault-0 is designed to protect API keys and sensitive data for AI agents.
 
 - **Storage:** Secrets are encrypted using AES-256-GCM with a key derived from your master passphrase using Argon2id.
 - **Memory:** Secrets are decrypted in memory only when needed and injected into the target process environment.
-- **Network:** The local proxy (127.0.0.1:3840) intercepts outbound traffic to enforce policies. It does not inspect traffic content beyond what is necessary for policy enforcement (e.g., headers, body for redaction).
+- **Network:** A local policy proxy is available at 127.0.0.1:3840 but is not in the agent's traffic path by default. To enforce network policies (domain blocking, redaction, MCP hardening), you must set `HTTP_PROXY=http://127.0.0.1:3840` in the agent's environment. Without this, the proxy runs but does not intercept agent traffic.
 - **Updates:** We recommend always running the latest version to ensure you have the latest security patches.
 
 ## Known Limitations
