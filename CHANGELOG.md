@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/0-Vault/Vault-0/compare/v1.0.3...v1.1.0) (2026-02-12)
+
+
+### Features
+
+* enhance GatewayTrace and Onboarding components with new features ([f437bce](https://github.com/0-Vault/Vault-0/commit/f437bce88083e4a66afb260c8519d1611c33ab12))
+* introduce Monitor tab for real-time agent activity tracking and enhance security policy documentation ([4d5c32b](https://github.com/0-Vault/Vault-0/commit/4d5c32bd03a69851f35e5d0d22a4bbc03bffc511))
+
 ## [1.0.3](https://github.com/0-Vault/Vault-0/compare/v1.0.2...v1.0.3) (2026-02-11)
 
 
