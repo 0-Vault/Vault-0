@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/0-Vault/Vault-0/compare/v1.2.0...v1.3.0) (2026-02-12)
+
+
+### Features
+
+* update vault0 metadata and version to 1.2.0 ([a99fb6f](https://github.com/0-Vault/Vault-0/commit/a99fb6f20494cd64ebb6dceb9e5437d87ad08094))
+
 # [1.2.0](https://github.com/0-Vault/Vault-0/compare/v1.1.0...v1.2.0) (2026-02-12)
 
 
