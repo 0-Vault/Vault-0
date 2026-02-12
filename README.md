@@ -1,7 +1,7 @@
-# Vault-0 — Secure Command Center for AI Agents
+# Vault-0 — Agent Security, Monitor & x402 Wallet for OpenClaw
 
 <p align="center">
-  <strong>Zero plaintext secrets. Policy-gated actions. Tamper-evident logs.</strong>
+  <strong>Encrypted secret vault, real-time agent monitor, and x402 wallet for OpenClaw agents.</strong>
 </p>
 
 <p align="center">

@@ -1,7 +1,7 @@
 [package]
 name = "vault0-desktop"
 version = "1.3.0"
-description = "Secure desktop dashboard for autonomous AI agents"
+description = "Agent security, monitor & x402 wallet for OpenClaw"
 authors = ["HorizonFlowLive"]
 edition = "2021"
 
