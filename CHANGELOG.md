@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/0-Vault/Vault-0/compare/v1.3.0...v1.4.0) (2026-02-12)
+
+
+### Features
+
+* update README and SKILL.md for Vault-0 version 1.3.0 ([3fa506f](https://github.com/0-Vault/Vault-0/commit/3fa506fe2b0ac053c23fdeb921fdf0960e766e9c))
+
 # [1.3.0](https://github.com/0-Vault/Vault-0/compare/v1.2.0...v1.3.0) (2026-02-12)
 
 
