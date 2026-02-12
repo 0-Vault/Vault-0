@@ -10,6 +10,7 @@
   export let maxVisible = 80;
 
   let expandedIdx: number | null = null;
+  let copiedIdx: number | null = null;
 
   function toggleExpand(i: number) {
     expandedIdx = expandedIdx === i ? null : i;
@@ -105,7 +106,20 @@
         </div>
         <p class="mt-1 text-sm text-zinc-300 {expandedIdx === i ? '' : 'truncate'}">{event.summary}</p>
         {#if expandedIdx === i}
-          <pre class="mt-2 rounded bg-zinc-950 border border-zinc-800 p-2 text-xs text-zinc-400 overflow-x-auto max-h-48 overflow-y-auto">{formatPayload(event.payload)}</pre>
+          <div class="mt-2 relative group/payload">
+            <button
+              type="button"
+              class="absolute top-1 right-1 rounded bg-zinc-800 px-1.5 py-0.5 text-[10px] text-zinc-500 hover:text-white hover:bg-zinc-700 opacity-0 group-hover/payload:opacity-100 transition-opacity"
+              on:click|stopPropagation={() => {
+                navigator.clipboard.writeText(event.payload);
+                copiedIdx = i;
+                setTimeout(() => { copiedIdx = null; }, 1500);
+              }}
+            >
+              {copiedIdx === i ? "Copied" : "Copy"}
+            </button>
+            <pre class="rounded bg-zinc-950 border border-zinc-800 p-2 text-xs text-zinc-400 overflow-x-auto max-h-48 overflow-y-auto select-text">{formatPayload(event.payload)}</pre>
+          </div>
         {/if}
       </button>
     </div>

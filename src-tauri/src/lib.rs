@@ -92,6 +92,7 @@ pub fn run() {
             gateway_ws::gateway_disconnect,
             gateway_ws::gateway_status,
             gateway_ws::get_gateway_events,
+            gateway_ws::gateway_clear_events,
         ])
         .setup(|_app| {
             info!("Vault-0 starting");

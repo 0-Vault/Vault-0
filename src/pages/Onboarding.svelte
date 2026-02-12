@@ -318,7 +318,7 @@
         </div>
         <div class="flex items-start gap-2">
           <span class="text-emerald-400 mt-0.5">4.</span>
-          <p><span class="text-zinc-300">Start proxy</span> that injects real keys from the vault at runtime. Keys never touch disk.</p>
+          <p><span class="text-zinc-300">Restart agent</span> with ephemeral key injection. Keys on disk for ~2 seconds, then zeroed.</p>
         </div>
         <p class="text-xs text-zinc-600 mt-2">All changes are reversible from the Dashboard.</p>
       </div>
@@ -498,6 +498,22 @@
           >
             {unlocking ? "Unlocking..." : "Unlock Vault"}
           </button>
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              class="rounded-lg border border-zinc-700 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 transition"
+              on:click={goToDashboard}
+            >
+              Skip to Dashboard
+            </button>
+            <button
+              type="button"
+              class="rounded-lg border border-zinc-700 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 transition"
+              on:click={goToMonitor}
+            >
+              Just Monitor
+            </button>
+          </div>
           {#if !showResetConfirm}
             <button
               type="button"
@@ -562,6 +578,22 @@
         >
           Harden Now
         </button>
+        <div class="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            class="rounded-lg border border-zinc-700 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 transition"
+            on:click={goToDashboard}
+          >
+            Skip to Dashboard
+          </button>
+          <button
+            type="button"
+            class="rounded-lg border border-zinc-700 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 transition"
+            on:click={goToMonitor}
+          >
+            Just Monitor
+          </button>
+        </div>
         {#if error}
           <p class="text-sm text-red-400">{error}</p>
         {/if}
