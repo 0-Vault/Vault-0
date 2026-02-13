@@ -44,6 +44,7 @@
   let resetting = false;
   let showFullReset = false;
   let fullResetting = false;
+  let showUnlockInline = false;
 
   onMount(async () => {
     state = "scanning";
@@ -53,14 +54,10 @@
         vaultUnlocked = await invoke<boolean>("vault_is_unlocked");
       }
       detection = await invoke<DetectionResult>("detect_openclaw");
-      if (vaultExists && !vaultUnlocked) {
-        state = "found";
-      } else {
-        state = "choose";
-      }
+      state = "choose";
     } catch (e: unknown) {
       detection = null;
-      state = "not_found";
+      state = "choose";
     }
   });
 
@@ -119,7 +116,11 @@
   }
 
   function chooseSecure() {
-    state = "found";
+    if (vaultExists && !vaultUnlocked) {
+      showUnlockInline = true;
+    } else {
+      startHarden();
+    }
   }
 
   function chooseInstall() {
@@ -250,30 +251,47 @@
     {:else if state === "choose"}
       <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-600/20 text-2xl mb-6">V0</div>
       <h2 class="text-2xl font-bold mb-3">Welcome to Vault-0</h2>
-      <p class="text-sm text-zinc-400 mb-4">Vault-0 is a secure command center for your OpenClaw AI agent. It encrypts your API keys, monitors agent activity, and gives you full control.</p>
-      <div class="space-y-3 text-xs text-zinc-500 mt-4">
-        <div class="flex items-start gap-2">
-          <span class="text-emerald-400 mt-0.5">📡</span>
-          <p>Monitor live agent activity: messages, tool calls, and thinking states in real time.</p>
-        </div>
-        <div class="flex items-start gap-2">
-          <span class="text-emerald-400 mt-0.5">🔒</span>
-          <p>Encrypt all API keys and tokens in a local vault.</p>
-        </div>
-        <div class="flex items-start gap-2">
-          <span class="text-emerald-400 mt-0.5">🛡</span>
-          <p>Apply security policies: domain allowlisting, spend caps, log redaction.</p>
-        </div>
-        <div class="flex items-start gap-2">
-          <span class="text-emerald-400 mt-0.5">🚨</span>
-          <p>Emergency controls to stop your agent instantly.</p>
-        </div>
-      </div>
+      <p class="text-sm text-zinc-400 mb-4">Vault-0 is a secure command center for your AI agents. It encrypts your API keys, monitors agent activity, and gives you full control.</p>
       {#if detection?.found}
-        <div class="mt-6 rounded-lg border border-emerald-800 bg-emerald-950/20 px-3 py-2 text-xs text-emerald-400">
-          OpenClaw detected at {detection.path}
+        <div class="space-y-3 text-xs text-zinc-500 mt-4">
+          <p class="text-xs font-medium text-zinc-400 uppercase tracking-wide">What "Secure My Agent" does</p>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-0.5">1.</span>
+            <p><span class="text-zinc-300">Encrypted backup</span> of your current config files.</p>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-0.5">2.</span>
+            <p><span class="text-zinc-300">Migrate secrets</span> into an encrypted vault. Replace originals with safe alias tokens.</p>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-0.5">3.</span>
+            <p><span class="text-zinc-300">Security policy</span> with domain allowlisting, metadata blocking, and log redaction.</p>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-0.5">4.</span>
+            <p><span class="text-zinc-300">Start secure proxy</span> that injects keys into outbound requests. Keys never touch disk.</p>
+          </div>
+          <p class="text-xs text-zinc-600 mt-2">All changes are reversible from the Dashboard.</p>
         </div>
       {:else}
+        <div class="space-y-3 text-xs text-zinc-500 mt-4">
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-0.5">📡</span>
+            <p>Monitor live agent activity: messages, tool calls, and thinking states in real time.</p>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-0.5">🔒</span>
+            <p>Encrypt all API keys and tokens in a local vault.</p>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-0.5">🛡</span>
+            <p>Apply security policies: domain allowlisting, spend caps, log redaction.</p>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 mt-0.5">🚨</span>
+            <p>Emergency controls to stop your agent instantly.</p>
+          </div>
+        </div>
         <div class="mt-6 rounded-lg border border-zinc-700 bg-zinc-800/40 px-3 py-2 text-xs text-zinc-500">
           No existing OpenClaw installation found.
         </div>
@@ -440,6 +458,34 @@
         </div>
 
       {:else if state === "choose"}
+        {#if detection?.found}
+          <div class="rounded-xl border border-zinc-700 bg-zinc-900/60 p-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="text-emerald-400 text-sm">●</span>
+              <div>
+                <span class="text-sm font-medium text-zinc-300">OpenClaw Detected</span>
+                <p class="font-mono text-xs text-zinc-500 break-all">{detection.path}</p>
+              </div>
+            </div>
+            {#if detection.cli_version}
+              <span class="text-xs text-zinc-500 shrink-0">v{detection.cli_version}</span>
+            {/if}
+          </div>
+          {#if detection.plaintext_keys.length > 0}
+            <div class="rounded-lg border {riskCss} px-3 py-2 flex items-center gap-2 text-sm">
+              <span>{risk === "Low" ? "✅" : "⚠️"}</span>
+              <span class="font-semibold">{risk} Risk</span>
+              <span class="text-xs opacity-75">— {detection.plaintext_keys.length} plaintext secret{detection.plaintext_keys.length > 1 ? "s" : ""} on disk</span>
+            </div>
+          {:else}
+            <div class="rounded-lg border border-emerald-800 bg-emerald-950/30 px-3 py-2 flex items-center gap-2 text-sm text-emerald-400">
+              <span>✅</span>
+              <span class="font-semibold">Low Risk</span>
+              <span class="text-xs opacity-75">— No plaintext secrets detected. Hardening still recommended.</span>
+            </div>
+          {/if}
+        {/if}
+
         <div class="grid grid-cols-3 gap-3">
           <button
             type="button"
@@ -475,6 +521,61 @@
             {/if}
           </button>
         </div>
+
+        {#if showUnlockInline}
+          <div class="rounded-xl border border-zinc-700 bg-zinc-900/60 p-4 space-y-3">
+            <p class="text-sm text-amber-400">Vault is locked. Enter your passphrase to continue.</p>
+            <input
+              type="password"
+              id="vault-inline-unlock"
+              name="password"
+              autocomplete="current-password"
+              bind:value={unlockPassphrase}
+              placeholder="Master passphrase"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 text-base text-white focus:border-emerald-500 focus:outline-none"
+            />
+            {#if unlockError}
+              <p class="text-sm text-red-400">{unlockError}</p>
+            {/if}
+            <div class="flex gap-2">
+              <button
+                type="button"
+                class="flex-1 rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50"
+                disabled={unlocking}
+                on:click={async () => { await unlockVault(); if (vaultUnlocked) { showUnlockInline = false; startHarden(); } }}
+              >
+                {unlocking ? "Unlocking..." : "Unlock + Harden"}
+              </button>
+              <button
+                type="button"
+                class="rounded-lg border border-zinc-700 px-4 py-2.5 text-sm text-zinc-400 hover:bg-zinc-800"
+                on:click={() => (showUnlockInline = false)}
+              >
+                Cancel
+              </button>
+            </div>
+            <button
+              type="button"
+              class="w-full text-center text-xs text-zinc-500 hover:text-red-400"
+              on:click={() => (showResetConfirm = true)}
+            >
+              Forgot passphrase? Reset vault...
+            </button>
+            {#if showResetConfirm}
+              <div class="rounded-lg border border-red-800 bg-red-950/30 p-3 space-y-2">
+                <p class="text-xs text-red-400">This permanently deletes all stored secrets.</p>
+                <div class="flex gap-2">
+                  <button type="button" class="flex-1 rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-500 disabled:opacity-50" disabled={resetting} on:click={resetVault}>
+                    {resetting ? "Resetting..." : "Delete Vault"}
+                  </button>
+                  <button type="button" class="flex-1 rounded-lg border border-zinc-600 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800" on:click={() => (showResetConfirm = false)}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            {/if}
+          </div>
+        {/if}
 
       {:else if state === "found" && detection && vaultExists && !vaultUnlocked}
         <div class="space-y-4">
