@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/0-Vault/Vault-0/compare/v1.5.0...v1.6.0) (2026-02-13)
+
+
+### Features
+
+* enhance Onboarding component with unlock functionality and updated descriptions ([91ce5a4](https://github.com/0-Vault/Vault-0/commit/91ce5a42c857cf1c63263ba17fe5e0b217b00209))
+
 # [1.5.0](https://github.com/0-Vault/Vault-0/compare/v1.4.0...v1.5.0) (2026-02-12)
 
 
